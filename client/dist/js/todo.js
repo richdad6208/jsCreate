@@ -6,7 +6,7 @@ function saveTodo() {
   return addTodoInputValue;
 }
 
-function activatePagenation(e) {
+function activatePagenation() {
   let currentPageNumber = null;
   [...$pagenation.children].forEach((page, index) => {
     page.classList.toggle("active", e.target === page);
@@ -17,18 +17,22 @@ function activatePagenation(e) {
   showPagenation(currentPageNumber);
 }
 
-function showPagenation(pageNumber) {
+function showPagenation(numberOfPage) {
   [...$pagenation.children].forEach((item) => item.classList.remove("active"));
-  $pagenation.children[pageNumber - 1].classList.add("active");
-  showTodos(pageNumber);
+  $pagenation.children[numberOfPage - 1].classList.add("active");
+  showTodos(numberOfPage);
 }
 
-function showTodos(pageNumber) {
+function showTodos(numberOfPage) {
   [...$todos.children].forEach((item) => item.classList.remove("active"));
-  let arr = [...$todos.children];
+  let activeTodos = [...$todos.children];
 
-  for (let i = 5 * (pageNumber - 1); i < 5 * pageNumber; i++) {
-    arr[i]?.classList.add("active");
+  for (
+    let i = PAGE_VOLUME * (numberOfPage - 1);
+    i < PAGE_VOLUME * numberOfPage;
+    i++
+  ) {
+    activeTodos[i]?.classList.add("active");
   }
 }
 function createPagenation() {
