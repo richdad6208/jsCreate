@@ -10,7 +10,9 @@ function activatePagenation(e) {
   let currentPageNumber = null;
   [...$pagenation.children].forEach((page, index) => {
     page.classList.toggle("active", e.target === page);
-    currentPageNumber = index;
+    if (page.classList.contains("active")) {
+      currentPageNumber = index + 1;
+    }
   });
   showPagenation(currentPageNumber);
 }
@@ -18,15 +20,14 @@ function activatePagenation(e) {
 function showPagenation(pageNumber) {
   [...$pagenation.children].forEach((item) => item.classList.remove("active"));
   $pagenation.children[pageNumber - 1].classList.add("active");
-  showTodos();
+  showTodos(pageNumber);
 }
 
-function showTodos() {
-  let currentPageVolume = Math.ceil($todos.children.length / PAGE_VOLUME);
+function showTodos(pageNumber) {
   [...$todos.children].forEach((item) => item.classList.remove("active"));
   let arr = [...$todos.children];
 
-  for (let i = 5 * (currentPageVolume - 1); i < 5 * currentPageVolume; i++) {
+  for (let i = 5 * (pageNumber - 1); i < 5 * pageNumber; i++) {
     arr[i]?.classList.add("active");
   }
 }
