@@ -1,17 +1,28 @@
 //깨달은 점 1. 코드 정리하기 전 깃커밋을 하자. 정리할 때는 고장이 잘나기 때문이다.
 
 function handleSearchTodos() {
-  debugger;
-  let searchKeyword = $searchTodosInput.value;
+  let searchKeyword = $searchTodosInput.value.trim();
+  const $alarm = document.querySelector(".alarm");
   let filteredTodos = [];
   if (searchKeyword) {
     [...$todos.children].forEach((todo) => todo.classList.remove("active"));
     filteredTodos = [...$todos.children].filter((todo) =>
       todo.firstChild.data.includes(searchKeyword)
     );
+    filteredTodosObj.keyOfFilteredTodos = filteredTodos;
     filteredTodos.forEach((todo) => todo.classList.add("active"));
+    if (filteredTodos.length > 0) {
+      $alarm.innerText = "";
+      $pagenation.style.display = "block";
+      createPagenation(filteredTodos);
+    } else {
+      $alarm.innerText = "검색 결과가 없습니다";
+      $pagenation.style.display = "none";
+    }
+  } else {
+    $alarm.innerText = "";
+    createPagenation();
   }
-  createPagenation(filteredTodos);
 }
 
 function saveTodo() {
@@ -32,15 +43,12 @@ function activatePagenation(e) {
 }
 
 function showPagenation(numberOfPage, arr = [...$todos.children]) {
-  debugger;
   [...$pagenation.children].forEach((item) => item.classList.remove("active"));
   $pagenation.children[numberOfPage - 1].classList.add("active");
   showTodos(numberOfPage, arr);
 }
 
 function showTodos(numberOfPage, arr = [...$todos.children]) {
-  debugger;
-
   // [...$todos.children].forEach((item) => item.classList.remove("active"));
   // let activeTodos = [...$todos.children];
   arr.forEach((item) => item.classList.remove("active"));
@@ -55,7 +63,6 @@ function showTodos(numberOfPage, arr = [...$todos.children]) {
   }
 }
 function createPagenation(arr = [...$todos.children]) {
-  debugger;
   let currentPageVolume = Math.ceil(arr.length / PAGE_VOLUME);
   $pagenation.innerHTML = "";
   for (let i = 1; i <= currentPageVolume; i++) {
@@ -88,11 +95,11 @@ const $formInHead = document.querySelector(".formInHead");
 const $pagenation = document.querySelector(".pagenation");
 const PAGE_VOLUME = 5;
 const filteredTodosObj = {
-  keyOfFilteredTodos: [], 
-}
+  keyOfFilteredTodos: [],
+};
 
 function main() {
-  $searchTodosButton.addEventListener("click", handleSearchTodos);
+  $searchTodosInput.addEventListener("input", handleSearchTodos);
 
   showPagenation(1);
   $formInHead.addEventListener("submit", (e) => {
@@ -101,9 +108,9 @@ function main() {
 
   $todos.addEventListener("click", (e) => {
     deleteTodoInList(e);
-    $searchTodosInput.value? createPagenation()
-      createPagenation();
-  
+    filteredTodosObj.keyOfFilteredTodos.length > 0
+      ? createPagenation(filteredTodosObj.keyOfFilteredTodos)
+      : createPagenation();
   });
 
   $addTodoButton.addEventListener("click", (e) => {
