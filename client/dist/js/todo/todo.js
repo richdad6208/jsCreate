@@ -2,26 +2,38 @@
 
 function handleSearchTodos() {
   let searchKeyword = $searchTodosInput.value.trim();
-  const $alarm = document.querySelector(".alarm");
   let filteredTodos = [];
   if (searchKeyword) {
-    [...$todos.children].forEach((todo) => todo.classList.remove("active"));
-    filteredTodos = [...$todos.children].filter((todo) =>
-      todo.firstChild.data.includes(searchKeyword)
-    );
-    filteredTodosObj.keyOfFilteredTodos = filteredTodos;
-    filteredTodos.forEach((todo) => todo.classList.add("active"));
-    if (filteredTodos.length > 0) {
-      $alarm.innerText = "";
-      $pagenation.style.display = "block";
-      createPagenation(filteredTodos);
-    } else {
-      $alarm.innerText = "검색 결과가 없습니다";
-      $pagenation.style.display = "none";
-    }
+    filteredTodos = checkTodosByKeyword(searchKeyword);
+    saveTodosInObj(filteredTodos);
+    activateTodos(filteredTodos);
+    checkIsTodosByKeyword(filteredTodos);
   } else {
     $alarm.innerText = "";
     createPagenation();
+  }
+}
+function checkTodosByKeyword(keyword) {
+  [...$todos.children].forEach((todo) => todo.classList.remove("active"));
+  return [...$todos.children].filter((todo) =>
+    todo.firstChild.data.includes(keyword)
+  );
+}
+
+function saveTodosInObj(arr) {
+  filteredTodosObj.keyOfFilteredTodos = arr;
+}
+function activateTodos(arr) {
+  arr.forEach((todo) => todo.classList.add("active"));
+}
+function checkIsTodosByKeyword(arr) {
+  if (arr.length > 0) {
+    $alarm.innerText = "";
+    $pagenation.style.display = "block";
+    createPagenation(arr);
+  } else {
+    $alarm.innerText = "검색 결과가 없습니다";
+    $pagenation.style.display = "none";
   }
 }
 
@@ -93,6 +105,7 @@ const $todos = document.querySelector(".todo__list");
 const $addTodoInput = document.querySelector(".addTodoInput");
 const $formInHead = document.querySelector(".formInHead");
 const $pagenation = document.querySelector(".pagenation");
+const $alarm = document.querySelector(".alarm");
 const PAGE_VOLUME = 5;
 const filteredTodosObj = {
   keyOfFilteredTodos: [],
@@ -100,7 +113,6 @@ const filteredTodosObj = {
 
 function main() {
   $searchTodosInput.addEventListener("input", handleSearchTodos);
-
   showPagenation(1);
   $formInHead.addEventListener("submit", (e) => {
     e.preventDefault();
